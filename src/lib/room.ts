@@ -1,3 +1,7 @@
+import { RoomUnit, RoomAreaUnit } from "../@types/Room.d.ts";
+
+export const measurementPrecision = 2;
+
 export const isImperial = (val: string) =>
   val.toLowerCase().indexOf("ft") !== -1;
 
@@ -25,11 +29,17 @@ export const parseImperial = (str: string): number => {
   const ft: number = Number(match[1]);
   const inches: number = Number(match[2]);
 
-  return Number((ft + inches / 12).toFixed(3));
+  return Number((ft + inches / 12).toFixed(measurementPrecision));
 };
 
 export const imperialToMetric = (imperial: number): number =>
-  Number((imperial * 0.3048).toFixed(3));
+  Number((imperial * 0.306).toFixed(measurementPrecision));
+
+export const metricToImperial = (metric: number): number =>
+  Number((metric * 3.28084).toFixed(measurementPrecision));
+
+export const areaMetricToImperial = (metric: number): number =>
+  Number((metric * 10.7639).toFixed(measurementPrecision));
 
 export const makeRoomDimensions = (dimsString: string): RoomDimensions => {
   const dimsReg: RegExp = /(.+) x (.+)/;
@@ -74,3 +84,28 @@ export const parseRooms = (str: string): Room[] => {
 
   return rooms;
 };
+
+export const calcCombinedArea = (
+  rooms: Room[],
+  unit: RoomAreaUnit = RoomUnit.METRIC
+): number => {
+  const metricArea = rooms.reduce((prev, cur) => {
+    const { length, width } = cur.dimensions;
+
+    return prev + length * width;
+  }, 0);
+
+  return unit === RoomAreaUnit.METRIC
+    ? metricArea
+    : areaMetricToImperial(metricArea);
+};
+
+export const getAreaUnit = (unit: RoomUnit): void => {
+  for (let roomUnit in RoomUnit) {
+    console.log(roomUnit);
+  }
+};
+export const showCombinedArea = (
+  rooms: Room[],
+  unit: RoomUnit = RoomUnit.METRIC
+): string => `${calcCombinedArea(rooms, unit)} ${getAreaUnit(unit)}`;

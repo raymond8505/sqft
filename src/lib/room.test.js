@@ -1,3 +1,4 @@
+import { RoomAreaUnit } from "../@types/Room.d.ts";
 import {
   makeRoom,
   makeRoomDimensions,
@@ -5,9 +6,10 @@ import {
   parseImperial,
   imperialToMetric,
   parseRooms,
+  calcCombinedArea,
 } from "./room.ts";
 
-const testRooms = parseRooms(`	Living room	
+const testRoomsImperial = parseRooms(`	Living room	
 21 ft ,3 in x 11 ft ,11 in
 Dining room	
 21 ft ,3 in x 11 ft ,11 in
@@ -17,6 +19,17 @@ Primary Bedroom
 11 ft ,6 in x 8 ft ,11 in
 Bedroom 2	
 9 ft ,1 in x 8 ft ,11 in`);
+
+const testRoomsMetric = parseRooms(`	Living room	
+6.49 m x 3.65 m
+Dining room	
+6.49 m x 3.65 m
+Kitchen	
+6.49 m x 3.65 m
+Primary Bedroom	
+3.53 m x 2.74 m
+Bedroom 2	
+2.77 m x 2.74 m`);
 
 describe("Room Utility Functions", () => {
   it("parseMetric", () => {
@@ -44,6 +57,21 @@ describe("Room Utility Functions", () => {
   });
 
   it("parseRooms", () => {
-    expect(testRooms.length).toEqual(5);
+    expect(testRoomsImperial.length).toEqual(5);
+  });
+
+  it("calcCombinedArea metric", () => {
+    const combinedArea = calcCombinedArea(testRoomsMetric);
+
+    expect(combinedArea).toEqual(88.3275);
+  });
+
+  it("calcCombinedArea imperial", () => {
+    const combinedArea = calcCombinedArea(
+      testRoomsImperial,
+      RoomAreaUnit.IMPERIAL
+    );
+
+    expect(combinedArea).toEqual(950.7483773);
   });
 });
