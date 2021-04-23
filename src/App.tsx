@@ -1,24 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import PasteArea from "./components/PasteArea";
+import { css } from "@emotion/css";
+import { parseRooms } from "./lib/room";
+import { useState } from "react";
+import RoomsTable from "./components/RoomsTable";
 
+const appClass = css`
+  text-align: center;
+  background: #fefefe;
+  padding: 1em;
+  font-family: Roboto, Helvetica, _sans;
+  font-size: 16px;
+`;
 function App() {
+  const [rooms, setRooms] = useState([]);
+
+  const onPasteAreaChange = (val: string) => {
+    setRooms(parseRooms(val));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={appClass}>
+      <PasteArea
+        placeholder={"Paste Room Dimensions Here"}
+        onChange={onPasteAreaChange}
+      ></PasteArea>
+      <RoomsTable rooms={rooms} />
     </div>
   );
 }
